@@ -55,7 +55,6 @@ class CommercialController(
 
   def renderPageskins: Action[AnyContent] =
     Action { implicit request =>
-      println("Pascal 12:36")
       val pageskinnedAdUnits = Store.getDfpPageSkinnedAdUnits()
       NoCache(Ok(views.html.commercial.pageskins(pageskinnedAdUnits)))
     }

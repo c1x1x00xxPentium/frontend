@@ -7,8 +7,6 @@ import dfp.ApiHelper.toMilliSeconds
 
 case class DfpDataExtractor(lineItems: Seq[GuLineItem], invalidLineItems: Seq[GuLineItem]) {
 
-  println("Pascal 12:55")
-  println(lineItems)
   val hasValidLineItems: Boolean = lineItems.nonEmpty
 
   val inlineMerchandisingTargetedTags: InlineMerchandisingTagSet = {

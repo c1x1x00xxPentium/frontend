@@ -26,6 +26,7 @@ class DfpDataCacheJob(
       val sponsorshipLineItemIds = dfpApi.readSponsorshipLineItemIds()
       val duration = System.currentTimeMillis - start
       log.info(s"Loading DFP data took $duration ms")
+      log.info(s"Nx102-01: ${data.hasValidLineItems}")
       write(data)
       Store.putNonRefreshableLineItemIds(sponsorshipLineItemIds)
     }
@@ -62,6 +63,8 @@ class DfpDataCacheJob(
       dfpApi.readCurrentLineItems,
     )
 
+    log.info(s"Nx102-05: loadSummary.validLineItems: count: ${loadSummary.validLineItems.size}")
+
     val loadDuration = System.currentTimeMillis - start
     log.info(s"Loading line items took $loadDuration ms")
 
@@ -76,14 +79,20 @@ class DfpDataCacheJob(
       allActiveLineItems: => DfpLineItems,
   ): LineItemLoadSummary = {
 
+    log.info(s"Nx102-06: cachedLineItems.validItems.isEmpty: ${cachedLineItems.validItems.isEmpty}")
+
     // If the cache is empty, run a full query to generate a complete LineItemLoadSummary, using allActiveLineItems.
     if (cachedLineItems.validItems.isEmpty) {
+      log.info(s"Nx102-07")
+      log.info(s"Nx102-09: allActiveLineItems.validItems ${allActiveLineItems.validItems.size}")
       // Create a full summary object from scratch, using a query that collects all line items from dfp.
       LineItemLoadSummary(
         validLineItems = allActiveLineItems.validItems,
         invalidLineItems = allActiveLineItems.invalidItems,
       )
     } else {
+
+      log.info(s"Nx102-08")
 
       // Calculate the most recent modified timestamp of the existing cache items,
       // and find line items modified since that timestamp.
@@ -121,6 +130,9 @@ class DfpDataCacheJob(
         updatedKeys.toSeq.sorted.map(updatedLineItemMap)
       }
 
+      log.info(s"Nx102-10: cachedLineItems.validItems ${cachedLineItems.validItems.size}")
+      log.info(s"Nx102-11: recentlyModified.validItems ${recentlyModified.validItems.size}")
+
       LineItemLoadSummary(
         validLineItems = updateCachedContent(cachedLineItems.validItems, recentlyModified.validItems),
         invalidLineItems = updateCachedContent(cachedLineItems.invalidItems, recentlyModified.invalidItems),
@@ -130,11 +142,12 @@ class DfpDataCacheJob(
 
   private def write(data: DfpDataExtractor): Unit = {
 
-    log.info("Pascal 12:59")
-
-    log.info(s"data.hasValidLineItems: ${data.hasValidLineItems}")
+    log.info(s"Nx102-02: ${data.hasValidLineItems}")
 
     if (data.hasValidLineItems) {
+
+      log.info(s"Nx102-03")
+
       val now = printLondonTime(LocalDateTime.now())
 
       val inlineMerchandisingTargetedTags = data.inlineMerchandisingTargetedTags
