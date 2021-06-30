@@ -130,7 +130,7 @@ class DfpDataCacheJob(
 
   private def write(data: DfpDataExtractor): Unit = {
 
-    println("Pascal 12:59")
+    log.info("Pascal 12:59")
 
     log.info(s"data.hasValidLineItems: ${data.hasValidLineItems}")
 
