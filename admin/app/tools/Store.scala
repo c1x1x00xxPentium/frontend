@@ -54,11 +54,14 @@ trait Store extends GuLogging with Dates {
 
   val now: String = DateTime.now().toHttpDateTimeString
 
-  def getDfpPageSkinnedAdUnits(): PageSkinSponsorshipReport =
+  def getDfpPageSkinnedAdUnits(): PageSkinSponsorshipReport = {
+    println("Pascal 12:38")
+    println(dfpPageSkinnedAdUnitsKey)
     S3.get(dfpPageSkinnedAdUnitsKey).flatMap(PageSkinSponsorshipReportParser(_)) getOrElse PageSkinSponsorshipReport(
       now,
       Nil,
     )
+  }
 
   def getDfpInlineMerchandisingTargetedTagsReport(): InlineMerchandisingTargetedTagsReport = {
     S3.get(dfpInlineMerchandisingTagsDataKey) flatMap (InlineMerchandisingTargetedTagsReportParser(_))

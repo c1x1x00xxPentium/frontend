@@ -130,6 +130,10 @@ class DfpDataCacheJob(
 
   private def write(data: DfpDataExtractor): Unit = {
 
+    println("Pascal 12:59")
+
+    log.info(s"data.hasValidLineItems: ${data.hasValidLineItems}")
+
     if (data.hasValidLineItems) {
       val now = printLondonTime(LocalDateTime.now())
 
