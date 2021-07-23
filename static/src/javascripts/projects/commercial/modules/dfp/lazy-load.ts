@@ -1,8 +1,8 @@
 import once from 'lodash/once';
+import type { Advert } from './Advert';
 import { dfpEnv } from './dfp-env';
 import { getAdvertById } from './get-advert-by-id';
 import { loadAdvert, refreshAdvert } from './load-advert';
-import type { Advert } from './Advert';
 
 const displayAd = (advertId: string) => {
 	const advert = getAdvertById(advertId);
@@ -29,8 +29,8 @@ const onIntersect = (
 			advertIds.push(entry.target.id);
 		});
 
-	dfpEnv.advertsToLoad = dfpEnv.advertsToLoad.filter(
-		(advert) => advertIds.indexOf(advert.id) < 0,
+	dfpEnv.advertsToLoad = dfpEnv.advertsToLoad.filter((advert) =>
+		advertIds.includes(advert.id),
 	);
 };
 
@@ -42,9 +42,9 @@ const getObserver = once(() =>
 	),
 );
 
-export const enableLazyLoad = (advert: Advert) => {
+export const enableLazyLoad = (advert: Advert): void => {
 	if (dfpEnv.lazyLoadObserve) {
-		getObserver().then((observer) => observer.observe(advert.node));
+		void getObserver().then((observer) => observer.observe(advert.node));
 	} else {
 		displayAd(advert.id);
 	}
